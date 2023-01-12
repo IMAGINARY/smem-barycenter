@@ -1,0 +1,36 @@
+{
+  "name": "barycenter",
+  "version": "0.0.0",
+  "description": "Find the barycenter of a shape.",
+  "main": "index.js",
+  "author": {
+    "name": "Daniel Ramos",
+    "email": "daniel.ramos@imaginary.org"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.2",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.31.0",
+    "parcel": "^2.8.2",
+    "prettier": "^2.8.2"
+  },
+  "targets": {
+    "frontend": {
+      "source": [
+        "src/html/index.html"
+      ],
+      "context": "browser",
+      "isLibrary": false,
+      "publicUrl": "."
+    }
+  },
+  "scripts": {
+    "build": "parcel build --target 'frontend'",
+    "serve": "parcel serve --no-hmr --dist-dir dist-dev --target 'frontend'",
+    "format": "prettier --write '{src/**/*,*}.{htm,html,js,mjs,ts,jsx,tsx,md,json,yaml,yml,css,scss}'",
+    "lint": "cd src/ts && eslint '{**/*,*}.{js,ts,jsx,tsx}'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
