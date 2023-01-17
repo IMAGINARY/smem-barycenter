@@ -24,8 +24,6 @@ canvas.addEventListener('pointerup', pointedUp);
 canvas.addEventListener('pointerout', pointedUp);
 
 function dragged(e: PointerEvent): void {
-  e.preventDefault();
-  e.stopPropagation();
   if (drawing) {
     const d =
       (lastPoint.x - e.offsetX) * (lastPoint.x - e.offsetX) +
@@ -39,9 +37,7 @@ function dragged(e: PointerEvent): void {
   }
 }
 
-function pointedDown(e: PointerEvent) {
-  e.preventDefault();
-  e.stopPropagation();
+function pointedDown() {
   path = [];
   drawing = true;
 }
