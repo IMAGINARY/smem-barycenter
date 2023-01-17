@@ -24,6 +24,8 @@ canvas.addEventListener('pointerup', pointedUp);
 canvas.addEventListener('pointerout', pointedUp);
 
 function dragged(e: PointerEvent): void {
+  e.preventDefault();
+  e.stopPropagation();
   if (drawing) {
     const d =
       (lastPoint.x - e.offsetX) * (lastPoint.x - e.offsetX) +
@@ -37,7 +39,9 @@ function dragged(e: PointerEvent): void {
   }
 }
 
-function pointedDown() {
+function pointedDown(e: PointerEvent) {
+  e.preventDefault();
+  e.stopPropagation();
   path = [];
   drawing = true;
 }
@@ -55,12 +59,13 @@ function draw() {
   }
   ctx.strokeStyle = 'black';
   ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.fillStyle = 'grey';
-  ctx.fill();
+  ctx.fillStyle = 'lightblue';
+  ctx.fill('evenodd');
   ctx.closePath();
+  ctx.stroke();
 
-  const B = barycenter(path);
+  //   const B = barycenter(path);
+  const B = barycenterBySurface();
 
   ctx.beginPath();
   ctx.arc(B.x, B.y, 5, 0, 2 * Math.PI, false);
@@ -87,7 +92,8 @@ function barycenter(P: Point[]): Point {
   const Cx = (1 / (6 * A)) * SX;
   const Cy = (1 / (6 * A)) * SY;
 
-  console.log(`barycenter: (${Cx},${Cy})`);
+  //   console.log(`barycenter: (${Cx},${Cy})`);
+  //   console.log(`area: ${A}`);
   return { x: Cx, y: Cy };
 }
 
@@ -109,7 +115,7 @@ function barycenterBySurface(): Point {
   }
   const Cx = SX / N;
   const Cy = SY / N;
-  console.log(`barycenterSurf: (${Cx},${Cy})`);
+  //   console.log(`barycenterSurf: (${Cx},${Cy})`);
 
   return { x: Cx, y: Cy };
 }
