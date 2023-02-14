@@ -8,8 +8,14 @@
     "email": "daniel.ramos@imaginary.org"
   },
   "license": "MIT",
+  "dependencies": {
+    "d3-selection": "^3.0.0",
+    "document-ready": "^2.0.2"
+  },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.2",
+    "@types/d3-selection": "^3.0.4",
+    "@types/document-ready": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.31.0",
