@@ -1,8 +1,31 @@
+
+body {
+  background-image: url('../img/background-light-sand.jpg');  
+}
+
 #canvas {
     position: absolute; 
-    top: 10px; 
+    background-color: antiquewhite;
+    // top: 10px; 
     left: 100px; 
-    border: 2px solid;
+    // width: 800px;
+    // height: 800px;
+    // border: 2px solid;
+    touch-action: none;
+}
+
+#canvas:not(:fullscreen){
+    display: none;
+}
+
+#canvasFly {
+    position: absolute; 
+    background-color: rgb(249, 215, 250);
+    // top: 10px; 
+    left: 100px; 
+    // width: 800px;
+    // height: 800px;
+    // border: 2px solid;
     touch-action: none;
 }
 
