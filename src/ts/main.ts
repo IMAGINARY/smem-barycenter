@@ -3,7 +3,6 @@ import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
 import ModeDraw from './modeDraw';
-import ModeFly from './modeFly';
 
 declare global {
   interface Window {
@@ -13,6 +12,7 @@ declare global {
 }
 
 function main() {
+  const drawApp = document.getElementById('drawApp') as HTMLDivElement;
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
   const ctx = canvas.getContext('2d', {
@@ -28,10 +28,10 @@ function main() {
   mode.activate();
   // window.mode = mode;
 
-  canvas.addEventListener(
+  drawApp.addEventListener(
     'fullscreenchange',
     function () {
-      if (canvas !== document.fullscreenElement) {
+      if (drawApp !== document.fullscreenElement) {
         canvas.width = 800;
         canvas.height = 800;
       }
@@ -42,7 +42,7 @@ function main() {
   document.getElementById('barycenterButton')?.addEventListener('click', () => {
     canvas.width = screen.width;
     canvas.height = screen.height;
-    canvas
+    drawApp
       .requestFullscreen()
       .then(() => screen.orientation.lock('landscape'))
       .then(
@@ -61,6 +61,10 @@ function main() {
   });
   // window.path = path;
   // window.barySur = barycenterBySurface;
+  document.getElementById('drawButton')?.addEventListener('click', () => {
+    mode.clear();
+    mode.activate();
+  });
 }
 
 ready(main);

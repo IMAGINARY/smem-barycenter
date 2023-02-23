@@ -9,11 +9,14 @@
   </head>
 
   <body>
-    <div>
-      <button id="barycenterButton">Barycenter</button>
+    <div class="toolbar">
+      <img src="../img/leaf-icon.jpeg" width="150" id="barycenterButton" />
     </div>
 
-    <canvas id="canvas" width="800" height="800"></canvas>
+    <div id="drawApp">
+      <canvas id="canvas" width="800" height="800"> </canvas>
+      <img src="../img/pencil-icon.jpeg" width="150" id="drawButton" />
+    </div>
 
     <div id="output"></div>
     <script src="../ts/main.ts" type="module"></script>

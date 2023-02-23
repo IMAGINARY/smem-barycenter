@@ -3,19 +3,34 @@ body {
   background-image: url('../img/background-light-sand.jpg');  
 }
 
-#canvas {
+.toolbar {
+    text-align: center;
+    width: 100%;
+}
+
+#drawApp {
     position: absolute; 
-    background-color: antiquewhite;
     // top: 10px; 
-    left: 100px; 
+    // left: 100px; 
     // width: 800px;
     // height: 800px;
     // border: 2px solid;
     touch-action: none;
+    background-image: url('../img/background-turquoise.jpg');
+}
+#canvas {
+    touch-action: none;
+
 }
 
-#canvas:not(:fullscreen){
+#drawApp:not(:fullscreen){
     display: none;
+}
+
+#drawButton {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
 }
 
 

@@ -1,14 +1,12 @@
 import { Mode } from './uiFunctions';
-import { Point } from './barycenter';
+import { Point, dist, distSq } from './mathHelpers';
 import { barycenterBySurface } from './barycenter';
-
-const distSq = (ptA: Point, ptB: Point): number =>
-  (ptA.x - ptB.x) * (ptA.x - ptB.x) + (ptA.y - ptB.y) * (ptA.y - ptB.y);
 
 export default class ModeDraw implements Mode {
   ctx: CanvasRenderingContext2D;
   cnv: HTMLCanvasElement;
   drawing = false;
+  color = 'lightblue';
   lastPoint = { x: 0, y: 0 };
   stickLengthSq = 1;
   actRadiusSq = 15 * 15;
@@ -17,7 +15,7 @@ export default class ModeDraw implements Mode {
   h: number;
 
   dragged = (e: PointerEvent): void => {
-    if (this.drawing) {
+    if (this.drawing && e.isPrimary) {
       const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
       if (d > this.stickLengthSq) {
         this.lastPoint.x = e.offsetX;
@@ -29,17 +27,26 @@ export default class ModeDraw implements Mode {
   };
 
   pointedDown = (e: PointerEvent) => {
-    const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
-    if (d > this.actRadiusSq) {
-      this.path = [];
-      this.clear();
+    if (e.isPrimary) {
+      const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
+      if (d > this.actRadiusSq) {
+        this.path = [];
+        this.clear();
+      }
+      this.drawing = true;
     }
-
-    this.drawing = true;
   };
 
   pointedUp = () => {
     this.drawing = false;
+
+    const iniPt = this.path[0];
+    const endPt = this.path[this.path.length - 1];
+    if (distSq(iniPt, endPt) < this.actRadiusSq) {
+      this.color = 'olive';
+      this.draw();
+      this.deactivate();
+    }
   };
 
   clear = () => {
@@ -56,9 +63,9 @@ export default class ModeDraw implements Mode {
     }
     this.ctx.strokeStyle = 'black';
     this.ctx.lineWidth = 2;
-    this.ctx.fillStyle = 'lightblue';
+    this.ctx.fillStyle = this.color;
     this.ctx.fill('evenodd');
-    this.ctx.closePath();
+    if (this.color === 'olive') this.ctx.closePath();
     this.ctx.stroke();
 
     //   const B = barycenter(path);
@@ -80,6 +87,8 @@ export default class ModeDraw implements Mode {
   }
 
   activate(): void {
+    this.path = [];
+    this.color = 'lightblue';
     this.cnv.addEventListener('pointermove', this.dragged);
     this.cnv.addEventListener('pointerdown', this.pointedDown);
     this.cnv.addEventListener('pointerup', this.pointedUp);
