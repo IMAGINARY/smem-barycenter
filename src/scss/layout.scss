@@ -1,6 +1,14 @@
 
 body {
   background-image: url('../img/background-light-sand.jpg');  
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .toolbar {
@@ -25,6 +33,7 @@ body {
 
 #drawApp:not(:fullscreen){
     display: none;
+    position: absolute;
 }
 
 #drawButton {
@@ -34,3 +43,10 @@ body {
 }
 
 
+
+  #appBtn {
+    padding: 10px;
+    border: 4px grey solid;
+    border-radius: 20px;
+    background-image: url("../img/background-turquoise.jpg");
+  }

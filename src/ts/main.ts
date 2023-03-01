@@ -39,7 +39,7 @@ function main() {
     false,
   );
 
-  document.getElementById('barycenterButton')?.addEventListener('click', () => {
+  document.getElementById('appBtn')?.addEventListener('click', () => {
     canvas.width = screen.width;
     canvas.height = screen.height;
     drawApp
