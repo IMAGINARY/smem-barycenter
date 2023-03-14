@@ -40,18 +40,20 @@ function main() {
   );
 
   document.getElementById('appBtn')?.addEventListener('click', () => {
-    canvas.width = screen.width;
-    canvas.height = screen.height;
+    const ww = screen.width;
+    const hh = screen.height;
+    canvas.width = Math.max(ww, hh);
+    canvas.height = Math.min(ww, hh);
     drawApp
       .requestFullscreen()
       .then(() => screen.orientation.lock('landscape'))
       .then(
         (success) => {
           console.log(success);
-          canvas.width = screen.width;
-          canvas.height = screen.height;
         },
-        (failure) => console.log(failure),
+        (failure) => {
+          console.log(failure);
+        },
       )
       .catch((err: Error) => {
         alert(
