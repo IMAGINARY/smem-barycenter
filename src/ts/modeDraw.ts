@@ -8,8 +8,8 @@ export default class ModeDraw implements Mode {
   drawing = false;
   color = 'lightblue';
   lastPoint = { x: 0, y: 0 };
-  stickLengthSq = 1;
-  actRadiusSq = 15 * 15;
+  stickLengthSq = 0.5;
+  actRadiusSq = 60 * 60; // activation radius squared
   path: Point[];
   w: number;
   h: number;
