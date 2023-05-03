@@ -25,7 +25,8 @@
   "targets": {
     "frontend": {
       "source": [
-        "src/html/index.html"
+        "src/html/index.html",
+        "src/html/index2.html"
       ],
       "context": "browser",
       "isLibrary": false,
