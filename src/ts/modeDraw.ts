@@ -1,27 +1,29 @@
-import { Mode } from './uiFunctions';
-import { Point, distSq } from './mathHelpers';
-import { barycenterBySurface } from './barycenter';
+import { Point, Layer, Mode } from './layer';
+import { distSq } from './mathHelpers';
 
-export default class ModeDraw implements Mode {
-  ctx: CanvasRenderingContext2D;
-  cnv: HTMLCanvasElement;
-  drawing = false;
-  color = 'lightblue';
-  lastPoint = { x: 0, y: 0 };
-  stickLengthSq = 0.5;
-  actRadiusSq = 60 * 60; // activation radius squared
-  path: Point[];
-  w: number;
-  h: number;
+// Hardcoded parameters
+const stickLengthSq = 0.5;
+const actRadiusSq = 60 * 60; // activation radius squared
+
+class ModeDraw implements Mode {
+  layer: Layer;
+  isDrawing: boolean;
+  lastPoint: Point;
+
+  constructor(layer: Layer) {
+    this.layer = layer;
+    this.isDrawing = false;
+    this.lastPoint = { x: 0, y: 0 };
+  }
 
   dragged = (e: PointerEvent): void => {
-    if (this.drawing && e.isPrimary) {
+    if (this.isDrawing && e.isPrimary) {
       const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
-      if (d > this.stickLengthSq) {
+      if (d > stickLengthSq) {
         this.lastPoint.x = e.offsetX;
         this.lastPoint.y = e.offsetY;
-        this.path.push({ x: this.lastPoint.x, y: this.lastPoint.y });
-        this.draw();
+        this.layer.path.data.push({ x: this.lastPoint.x, y: this.lastPoint.y });
+        this.layer.render();
       }
     }
   };
@@ -29,76 +31,42 @@ export default class ModeDraw implements Mode {
   pointedDown = (e: PointerEvent) => {
     if (e.isPrimary) {
       const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
-      if (d > this.actRadiusSq) {
-        this.path = [];
-        this.clear();
+      if (d > actRadiusSq) {
+        this.layer.path.data = [];
+        this.layer.path.isClosed = false;
+        this.layer.clear();
       }
-      this.drawing = true;
+      this.isDrawing = true;
     }
   };
 
   pointedUp = () => {
-    this.drawing = false;
+    this.isDrawing = false;
 
-    const iniPt = this.path[0];
-    const endPt = this.path[this.path.length - 1];
-    if (distSq(iniPt, endPt) < this.actRadiusSq) {
-      this.color = 'olive';
-      this.draw();
+    const iniPt = this.layer.path.data[0];
+    const endPt = this.layer.path.data[this.layer.path.data.length - 1];
+    if (distSq(iniPt, endPt) < actRadiusSq) {
+      this.layer.path.isClosed = true;
+      this.layer.render();
       this.deactivate();
     }
   };
-
-  clear = () => {
-    this.path = [];
-    this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.width);
-  };
-
-  draw = () => {
-    this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.path[0].x, this.path[0].y);
-    for (let i = 1; i < this.path.length; i++) {
-      this.ctx.lineTo(this.path[i].x, this.path[i].y);
-    }
-    this.ctx.strokeStyle = 'black';
-    this.ctx.lineWidth = 2;
-    this.ctx.fillStyle = this.color;
-    this.ctx.fill('evenodd');
-    if (this.color === 'olive') this.ctx.closePath();
-    this.ctx.stroke();
-
-    //   const B = barycenter(path);
-    const B = barycenterBySurface(this.ctx).center;
-
-    this.ctx.beginPath();
-    this.ctx.arc(B.x, B.y, 5, 0, 2 * Math.PI, false);
-    this.ctx.fillStyle = 'red';
-    this.ctx.fill();
-    this.ctx.stroke();
-  };
-
-  constructor(ctx: CanvasRenderingContext2D, path: Point[]) {
-    this.ctx = ctx;
-    this.cnv = ctx.canvas;
-    this.path = path;
-    this.w = this.cnv.width;
-    this.h = this.cnv.height;
-  }
-
   activate(): void {
-    this.path = [];
-    this.color = 'lightblue';
-    this.cnv.addEventListener('pointermove', this.dragged);
-    this.cnv.addEventListener('pointerdown', this.pointedDown);
-    this.cnv.addEventListener('pointerup', this.pointedUp);
-    this.cnv.addEventListener('pointerout', this.pointedUp);
+    console.log('modeDraw activated');
+    this.layer.activate();
+    this.layer.cnv.addEventListener('pointermove', this.dragged);
+    this.layer.cnv.addEventListener('pointerdown', this.pointedDown);
+    this.layer.cnv.addEventListener('pointerup', this.pointedUp);
+    this.layer.cnv.addEventListener('pointerout', this.pointedUp);
   }
 
   deactivate(): void {
-    this.cnv.removeEventListener('pointermove', this.dragged);
-    this.cnv.removeEventListener('pointerdown', this.pointedDown);
-    this.cnv.removeEventListener('pointerup', this.pointedUp);
-    this.cnv.removeEventListener('pointerout', this.pointedUp);
+    this.layer.deactivate();
+    this.layer.cnv.removeEventListener('pointermove', this.dragged);
+    this.layer.cnv.removeEventListener('pointerdown', this.pointedDown);
+    this.layer.cnv.removeEventListener('pointerup', this.pointedUp);
+    this.layer.cnv.removeEventListener('pointerout', this.pointedUp);
   }
 }
+
+export { ModeDraw };

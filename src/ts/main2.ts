@@ -4,7 +4,8 @@ import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
 // import ModeDraw from './modeDraw';
-import { Layer, ModeDraw } from './modes';
+import { Layer } from './layer';
+import { ModeDraw } from './modeDraw';
 
 declare global {
   interface Window {
@@ -55,7 +56,7 @@ function main() {
     layerOver.drawBarycenter();
   };
 
-  window.GlBary = drawGlobalBarycenter;
+  // window.GlBary = drawGlobalBarycenter;
 
   modeDraw1.activate();
 
