@@ -1,5 +1,5 @@
 import { Mode } from './uiFunctions';
-import { Point, dist, distSq } from './mathHelpers';
+import { Point, distSq } from './mathHelpers';
 import { barycenterBySurface } from './barycenter';
 
 export default class ModeDraw implements Mode {
@@ -69,7 +69,7 @@ export default class ModeDraw implements Mode {
     this.ctx.stroke();
 
     //   const B = barycenter(path);
-    const B = barycenterBySurface(this.ctx);
+    const B = barycenterBySurface(this.ctx).center;
 
     this.ctx.beginPath();
     this.ctx.arc(B.x, B.y, 5, 0, 2 * Math.PI, false);

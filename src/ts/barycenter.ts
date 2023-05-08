@@ -26,7 +26,10 @@ function barycenterByBorder(P: Point[]): Point {
   return { x: Cx, y: Cy };
 }
 
-function barycenterBySurface(ctx: CanvasRenderingContext2D): Point {
+function barycenterBySurface(ctx: CanvasRenderingContext2D): {
+  center: Point;
+  area: number;
+} {
   //context: CanvasRenderingContext2D
   const w = ctx.canvas.width;
   const h = ctx.canvas.height;
@@ -47,8 +50,8 @@ function barycenterBySurface(ctx: CanvasRenderingContext2D): Point {
   const Cx = SX / N;
   const Cy = SY / N;
   //   console.log(`barycenterSurf: (${Cx},${Cy})`);
-
-  return { x: Cx, y: Cy };
+  // console.log(`area: ${N}`);
+  return { center: { x: Cx, y: Cy }, area: N };
 }
 
 export { Point, barycenterBySurface, barycenterByBorder };
