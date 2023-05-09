@@ -16,18 +16,6 @@ class ModeDraw implements Mode {
     this.lastPoint = { x: 0, y: 0 };
   }
 
-  dragged = (e: PointerEvent): void => {
-    if (this.isDrawing && e.isPrimary) {
-      const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
-      if (d > stickLengthSq) {
-        this.lastPoint.x = e.offsetX;
-        this.lastPoint.y = e.offsetY;
-        this.layer.path.data.push({ x: this.lastPoint.x, y: this.lastPoint.y });
-        this.layer.render();
-      }
-    }
-  };
-
   pointedDown = (e: PointerEvent) => {
     if (e.isPrimary) {
       const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
@@ -40,17 +28,32 @@ class ModeDraw implements Mode {
     }
   };
 
+  dragged = (e: PointerEvent): void => {
+    if (this.isDrawing && e.isPrimary) {
+      const d = distSq(this.lastPoint, { x: e.offsetX, y: e.offsetY });
+      if (d > stickLengthSq) {
+        this.lastPoint.x = e.offsetX;
+        this.lastPoint.y = e.offsetY;
+        this.layer.path.data.push({ x: this.lastPoint.x, y: this.lastPoint.y });
+        this.layer.render();
+      }
+    }
+  };
+
   pointedUp = () => {
     this.isDrawing = false;
 
-    const iniPt = this.layer.path.data[0];
-    const endPt = this.layer.path.data[this.layer.path.data.length - 1];
-    if (distSq(iniPt, endPt) < actRadiusSq) {
-      this.layer.path.isClosed = true;
-      this.layer.render();
-      this.deactivate();
+    if (this.layer.path.data.length) {
+      const iniPt = this.layer.path.data[0];
+      const endPt = this.layer.path.data[this.layer.path.data.length - 1];
+      if (distSq(iniPt, endPt) < actRadiusSq) {
+        this.layer.path.isClosed = true;
+        this.layer.render();
+        this.deactivate();
+      }
     }
   };
+
   activate(): void {
     console.log('modeDraw activated');
     this.layer.activate();

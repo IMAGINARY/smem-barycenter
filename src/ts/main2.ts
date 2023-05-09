@@ -4,8 +4,9 @@ import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
 // import ModeDraw from './modeDraw';
-import { Layer } from './layer';
+import { Mode, Layer } from './layer';
 import { ModeDraw } from './modeDraw';
+import { ModeEdit } from './modeEdit';
 
 declare global {
   interface Window {
@@ -23,6 +24,8 @@ function main() {
     colorClosed: 'red',
   });
   const modeDraw1 = new ModeDraw(layer1);
+
+  const modeEdit1 = new ModeEdit(layer1);
 
   const layer2 = new Layer(canvasStack, {
     colorOpen: 'aquamarine',
@@ -60,7 +63,8 @@ function main() {
 
   modeDraw1.activate();
 
-  let currentMode = modeDraw1;
+  let currentMode = modeDraw1 as Mode;
+
   console.log(d3);
   d3.select('#appContainer')
     .append('button')
@@ -84,6 +88,15 @@ function main() {
     .append('button')
     .html('Global Barycenter')
     .on('click', drawGlobalBarycenter);
+
+  d3.select('#appContainer')
+    .append('button')
+    .html('Edit1')
+    .on('click', () => {
+      currentMode.deactivate();
+      currentMode = modeEdit1;
+      currentMode.activate();
+    });
 }
 
 ready(main);

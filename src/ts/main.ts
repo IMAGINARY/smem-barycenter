@@ -2,7 +2,7 @@ import ready from 'document-ready';
 import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
-import ModeDraw from './modeDraw';
+import ModeDraw from './modeDraw-old';
 
 declare global {
   interface Window {

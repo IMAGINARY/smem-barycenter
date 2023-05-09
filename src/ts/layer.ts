@@ -56,7 +56,6 @@ class Layer implements Layer {
   }
 
   drawPath(): void {
-    this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
     this.ctx.beginPath();
     this.ctx.moveTo(this.path.data[0].x, this.path.data[0].y);
     for (let i = 1; i < this.path.data.length; i++) {
@@ -87,17 +86,27 @@ class Layer implements Layer {
     this.ctx.stroke();
   }
 
-  render(): void {
-    this.drawPath();
+  computeBarycenter(): void {
     const bary = barycenterBySurface(this.ctx);
     this.barycenter = bary.center;
     this.area = bary.area;
-    this.drawBarycenter();
+  }
+
+  render(): void {
+    if (this.path.data.length) {
+      this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.height);
+      this.drawPath();
+      this.computeBarycenter();
+      this.drawBarycenter();
+    }
   }
 
   clear(): void {
-    this.path.data = [];
     this.ctx.clearRect(0, 0, this.cnv.width, this.cnv.width);
+  }
+
+  emptyData(): void {
+    this.path.data = [];
   }
 
   activate(): void {
