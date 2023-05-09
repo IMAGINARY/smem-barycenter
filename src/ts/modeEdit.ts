@@ -40,6 +40,12 @@ class ModeEdit implements Mode {
         (x) => dist(p, x) < 5 * nodeRadius,
       );
     }
+    if (this.selectedPoints.length === 0) {
+      const color = this.layer.ctx.getImageData(p.x, p.y, 1, 1).data;
+      if (color[3] !== 0) {
+        this.selectedPoints = this.layer.path.data;
+      }
+    }
     console.log(this.selectedPoints);
   }
 
