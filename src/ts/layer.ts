@@ -48,7 +48,7 @@ class Layer implements Layer {
     this.parameters = parameters;
 
     this.cnv.style.pointerEvents = 'none';
-    console.log(this.parameters);
+    // console.log(this.parameters);
     this.ctx.fillStyle = this.parameters.colorOpen;
     // this.ctx.fillStyle = numLayer === 0 ? 'blue' : 'red';
 

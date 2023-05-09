@@ -65,7 +65,6 @@ function main() {
 
   let currentMode = modeDraw1 as Mode;
 
-  console.log(d3);
   d3.select('#appContainer')
     .append('button')
     .html('layer1')
