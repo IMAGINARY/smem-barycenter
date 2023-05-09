@@ -46,7 +46,6 @@ class ModeEdit implements Mode {
         this.selectedPoints = this.layer.path.data;
       }
     }
-    console.log(this.selectedPoints);
   }
 
   pointedDown = (e: PointerEvent) => {

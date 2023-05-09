@@ -51,6 +51,7 @@ body {
     background-image: url("../img/background-turquoise.jpg");
   }
 
+  
   #canvasStack {
     position: relative;
     width: 800px;
@@ -61,4 +62,13 @@ body {
   .layer {
     position: absolute; left: 0; top: 0;
     opacity: 0.8;
+  }
+
+  #appContainer{
+    display: grid;
+    grid-template-columns: auto auto;
+  }
+  #toolbar {
+    display: flex;
+    flex-direction: column;
   }

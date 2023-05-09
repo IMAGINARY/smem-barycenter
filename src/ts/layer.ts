@@ -14,6 +14,7 @@ interface Path {
 interface Parameters {
   colorClosed: string;
   colorOpen: string;
+  colorBary: string;
 }
 
 // A "Layer" is a canvas element that contains data (path, barycenter, parameters)...
@@ -29,6 +30,8 @@ interface Layer {
   clear(): void;
   deactivate(): void; // Cleans all the user interaction.
 }
+
+const triggerBarycenter = new Event('triggerBarycenter', { bubbles: true });
 
 class Layer implements Layer {
   constructor(parent: HTMLDivElement, parameters: Parameters) {
@@ -81,7 +84,7 @@ class Layer implements Layer {
       2 * Math.PI,
       false,
     );
-    this.ctx.fillStyle = 'red';
+    this.ctx.fillStyle = this.parameters.colorBary;
     this.ctx.fill();
     this.ctx.stroke();
   }
@@ -90,6 +93,7 @@ class Layer implements Layer {
     const bary = barycenterBySurface(this.ctx);
     this.barycenter = bary.center;
     this.area = bary.area;
+    this.cnv.dispatchEvent(triggerBarycenter);
   }
 
   render(): void {

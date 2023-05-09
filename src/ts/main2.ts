@@ -7,6 +7,7 @@ import { Point } from './barycenter';
 import { Mode, Layer } from './layer';
 import { ModeDraw } from './modeDraw';
 import { ModeEdit } from './modeEdit';
+import { ModeLoad } from './modeLoad';
 
 declare global {
   interface Window {
@@ -22,20 +23,46 @@ function main() {
   const layer1 = new Layer(canvasStack, {
     colorOpen: 'pink',
     colorClosed: 'red',
+    colorBary: 'white',
   });
   const modeDraw1 = new ModeDraw(layer1);
-
   const modeEdit1 = new ModeEdit(layer1);
+  const modeLoad1 = new ModeLoad(layer1);
 
   const layer2 = new Layer(canvasStack, {
     colorOpen: 'aquamarine',
     colorClosed: 'green',
+    colorBary: 'white',
   });
   const modeDraw2 = new ModeDraw(layer2);
+  const modeEdit2 = new ModeEdit(layer2);
+  const modeLoad2 = new ModeLoad(layer2);
+
+  const layers = [
+    {
+      name: 'layer1',
+      layer: layer1,
+      modeDraw: modeDraw1,
+      modeEdit: modeEdit1,
+      modeLoad: modeLoad1,
+    },
+    {
+      name: 'layer2',
+      layer: layer2,
+      modeDraw: modeDraw2,
+      modeEdit: modeEdit2,
+      modeLoad: modeLoad2,
+    },
+  ];
 
   const layerOver = new Layer(canvasStack, {
     colorOpen: 'aquamarine',
     colorClosed: 'green',
+    colorBary: 'yellow',
+  });
+
+  canvasStack.addEventListener('triggerBarycenter', () => {
+    drawGlobalBarycenter();
   });
 
   const globalBarycenter = (): Point => {
@@ -53,10 +80,12 @@ function main() {
   };
 
   const drawGlobalBarycenter = () => {
-    layerOver.clear();
-    const C = globalBarycenter();
-    layerOver.barycenter = C;
-    layerOver.drawBarycenter();
+    if (layer1.path.data.length > 1 && layer2.path.data.length > 1) {
+      layerOver.clear();
+      const C = globalBarycenter();
+      layerOver.barycenter = C;
+      layerOver.drawBarycenter();
+    }
   };
 
   // window.GlBary = drawGlobalBarycenter;
@@ -65,37 +94,53 @@ function main() {
 
   let currentMode = modeDraw1 as Mode;
 
-  d3.select('#appContainer')
+  const layersUI = d3
+    .select('#toolbar')
+    .selectAll('div')
+    .data(layers)
+    .enter()
+    .append('div');
+
+  layersUI
     .append('button')
-    .html('layer1')
-    .on('click', () => {
+    .html((d) => `Draw ${d.name}`)
+    .on('click', (ev, d) => {
       currentMode.deactivate();
-      currentMode = modeDraw1;
+      currentMode = d.modeDraw;
       currentMode.activate();
     });
 
-  d3.select('#appContainer')
+  layersUI
     .append('button')
-    .html('layer2')
-    .on('click', () => {
+    .html((d) => `Edit ${d.name}`)
+    .on('click', (ev, d) => {
       currentMode.deactivate();
-      currentMode = modeDraw2;
+      currentMode = d.modeEdit;
       currentMode.activate();
     });
 
-  d3.select('#appContainer')
+  layersUI
     .append('button')
-    .html('Global Barycenter')
-    .on('click', drawGlobalBarycenter);
-
-  d3.select('#appContainer')
-    .append('button')
-    .html('Edit1')
-    .on('click', () => {
+    .html((d) => `Load ${d.name}`)
+    .on('click', (ev, d) => {
       currentMode.deactivate();
-      currentMode = modeEdit1;
+      currentMode = d.modeLoad;
       currentMode.activate();
     });
+
+  // d3.select('#toolbar')
+  //   .append('button')
+  //   .html('Global Barycenter')
+  //   .on('click', drawGlobalBarycenter);
+
+  //   d3.select('#toolbar')
+  //     .append('button')
+  //     .html('Load')
+  //     .on('click', () => {
+  //       currentMode.deactivate();
+  //       currentMode = modeLoad1;
+  //       currentMode.activate();
+  //     });
 }
 
 ready(main);
