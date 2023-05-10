@@ -54,8 +54,8 @@ body {
   
   #canvasStack {
     position: relative;
-    width: 800px;
-    height: 800px;
+    width: 75vw;
+    height: 90vh;
     border: 2px solid black;
   }
 
@@ -71,4 +71,26 @@ body {
   #toolbar {
     display: flex;
     flex-direction: column;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .loadOptionsList{
+    list-style-type:none;
+    margin: 0;
+    padding: 0;
+  }
+  .loadOptionsItem {
+    background-color: lightgrey;
+    border: 1px solid black;
+    border-radius: 2px;
+    margin: 1px;
+    padding:0.2em;
+  }
+
+  .layerButtons {
+    display: flex;
+    align-items: flex-start;
   }

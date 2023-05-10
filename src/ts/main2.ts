@@ -17,6 +17,19 @@ declare global {
 }
 // window.d3 = d3;
 
+// class layerSetup {
+
+// }
+
+interface layerSetup {
+  name: string;
+  layer: Layer;
+  modeDraw: ModeDraw;
+  modeEdit: ModeEdit;
+  modeLoad: ModeLoad;
+  loadOptions: string[];
+}
+
 function main() {
   const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
 
@@ -45,6 +58,7 @@ function main() {
       modeDraw: modeDraw1,
       modeEdit: modeEdit1,
       modeLoad: modeLoad1,
+      loadOptions: ['triangle', 'square', 'fish'],
     },
     {
       name: 'layer2',
@@ -52,6 +66,7 @@ function main() {
       modeDraw: modeDraw2,
       modeEdit: modeEdit2,
       modeLoad: modeLoad2,
+      loadOptions: ['triangle', 'square', 'fish'],
     },
   ];
 
@@ -99,7 +114,8 @@ function main() {
     .selectAll('div')
     .data(layers)
     .enter()
-    .append('div');
+    .append('div')
+    .classed('layerButtons', true);
 
   layersUI
     .append('button')
@@ -119,14 +135,57 @@ function main() {
       currentMode.activate();
     });
 
-  layersUI
-    .append('button')
-    .html((d) => `Load ${d.name}`)
-    .on('click', (ev, d) => {
-      currentMode.deactivate();
-      currentMode = d.modeLoad;
-      currentMode.activate();
+  const makeLoadOptions = (layerStp: layerSetup) => {
+    const container = document.createElement('span');
+    const button = d3
+      .select(container)
+      .append('button')
+      .html(`Load ${layerStp.name}`);
+
+    const options = d3
+      .select(container)
+      .append('ul')
+      .classed('hidden', true)
+      .classed('loadOptionsList', true);
+
+    options
+      .selectAll('li')
+      .data(layerStp.loadOptions)
+      .enter()
+      .append('li')
+      .classed('loadOptionsItem', true)
+      .html((d) => d)
+      .on('click', (ev, d) => {
+        console.log(d);
+        layerStp.modeLoad.loadShape(d);
+      });
+
+    button.on('click', () => {
+      options.classed('hidden', !options.classed('hidden'));
     });
+    console.log(d3.select(container));
+
+    return container;
+  };
+
+  console.log(makeLoadOptions(layers[0]));
+  layersUI.append((d) => makeLoadOptions(d));
+
+  // layersUI
+  //   .append('select')
+  //   .selectAll('option')
+  //   .data((d) => d.layer.parameters.loadOptions)
+  //   .enter()
+  //   .append('option')
+  //   .html((d) => `Load ${d}`)
+  //   .on('change', (ev, d, i, n) => {
+  //     const mode = console.log(d3.select(n[i].parentNode).datum().modeLoad);
+  //     console.log(mode);
+  //     currentMode.deactivate();
+  //     currentMode = mode;
+  //     currentMode.activate();
+  //     mode.loadShape(d);
+  //   });
 
   // d3.select('#toolbar')
   //   .append('button')

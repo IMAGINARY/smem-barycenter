@@ -33,7 +33,7 @@ class ModeLoad implements Mode {
   activate(): void {
     console.log('modeLoad activated');
     // this.layer.activate();
-    this.loadShape('fish');
+    // this.loadShape('fish');
   }
 
   deactivate(): void {

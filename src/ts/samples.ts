@@ -40,7 +40,7 @@ let fish;
     .map((d) => d.split(','))
     .map((d) => ({ x: d[0], y: d[1] }));
 
-  fish = { name: 'fish', data: pts, size: 15000 };
+  fish = { name: 'fish', data: pts, size: 20000 };
 }
 
 export { Sample, square, triangle, fish };
