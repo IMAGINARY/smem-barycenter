@@ -58,7 +58,7 @@ function main() {
       modeDraw: modeDraw1,
       modeEdit: modeEdit1,
       modeLoad: modeLoad1,
-      loadOptions: ['triangle', 'square', 'fish'],
+      loadOptions: ['triangle', 'square', 'dolphin'],
     },
     {
       name: 'layer2',
@@ -66,7 +66,7 @@ function main() {
       modeDraw: modeDraw2,
       modeEdit: modeEdit2,
       modeLoad: modeLoad2,
-      loadOptions: ['triangle', 'square', 'fish'],
+      loadOptions: ['triangle', 'square', 'dolphin'],
     },
   ];
 
