@@ -1,5 +1,8 @@
 /** Interface declarations for the layer classes */
 import { barycenterBySurface } from './barycenter';
+import { ModeDraw } from './modeDraw';
+import { ModeEdit } from './modeEdit';
+import { ModeLoad } from './modeLoad';
 
 interface Point {
   x: number;
@@ -11,7 +14,7 @@ interface Path {
   isClosed: boolean;
 }
 
-interface Parameters {
+interface layerOptions {
   colorClosed: string;
   colorOpen: string;
   colorBary: string;
@@ -22,19 +25,29 @@ interface Layer {
   cnv: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   path: Path;
-  parameters: Parameters; // Global state parameters
+  parameters: layerOptions; // Global state parameters
   barycenter: Point;
   area: number;
   activate(): void; // Prepares the user interaction (sets the event handlers, etc).
   render(): void; // Updates the image, can be called without previous activate().
   clear(): void;
   deactivate(): void; // Cleans all the user interaction.
+  modeDraw: Mode;
+  modeEdit: Mode;
+  modeLoad: ModeLoad;
+}
+
+// A "Mode" extends a Layer with a functionality (user interaction)
+interface Mode {
+  layer: Layer;
+  activate(): void; // Prepares the user interaction (sets the event handlers, etc.
+  deactivate(): void; // Cleans all the user interaction and rendered features.
 }
 
 const triggerBarycenter = new Event('triggerBarycenter', { bubbles: true });
 
 class Layer implements Layer {
-  constructor(parent: HTMLDivElement, parameters: Parameters) {
+  constructor(parent: HTMLDivElement, parameters: layerOptions) {
     this.cnv = document.createElement('canvas');
     this.cnv.width = parent.clientWidth;
     this.cnv.height = parent.clientHeight;
@@ -56,6 +69,10 @@ class Layer implements Layer {
     // this.ctx.fillStyle = numLayer === 0 ? 'blue' : 'red';
 
     this.path = { data: [], isClosed: false };
+
+    this.modeDraw = new ModeDraw(this);
+    this.modeEdit = new ModeEdit(this);
+    this.modeLoad = new ModeLoad(this);
   }
 
   drawPath(): void {
@@ -122,11 +139,4 @@ class Layer implements Layer {
   }
 }
 
-// A Mode extends a Layer with a functionality (user interaction)
-interface Mode {
-  layer: Layer;
-  activate(): void; // Prepares the user interaction (sets the event handlers, etc.
-  deactivate(): void; // Cleans all the user interaction and rendered features.
-}
-
-export { Point, Path, Parameters, Layer, Mode };
+export { Point, Path, layerOptions, Layer, Mode };

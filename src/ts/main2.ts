@@ -4,10 +4,7 @@ import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
 // import ModeDraw from './modeDraw';
-import { Mode, Layer } from './layer';
-import { ModeDraw } from './modeDraw';
-import { ModeEdit } from './modeEdit';
-import { ModeLoad } from './modeLoad';
+import { Mode, Layer, layerOptions } from './layer';
 
 declare global {
   interface Window {
@@ -23,52 +20,38 @@ declare global {
 
 interface layerSetup {
   name: string;
-  layer: Layer;
-  modeDraw: ModeDraw;
-  modeEdit: ModeEdit;
-  modeLoad: ModeLoad;
+  layer?: Layer;
+  layerOptions: layerOptions;
   loadOptions: string[];
 }
 
 function main() {
   const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
 
-  const layer1 = new Layer(canvasStack, {
-    colorOpen: 'pink',
-    colorClosed: 'red',
-    colorBary: 'white',
-  });
-  const modeDraw1 = new ModeDraw(layer1);
-  const modeEdit1 = new ModeEdit(layer1);
-  const modeLoad1 = new ModeLoad(layer1);
-
-  const layer2 = new Layer(canvasStack, {
-    colorOpen: 'aquamarine',
-    colorClosed: 'green',
-    colorBary: 'white',
-  });
-  const modeDraw2 = new ModeDraw(layer2);
-  const modeEdit2 = new ModeEdit(layer2);
-  const modeLoad2 = new ModeLoad(layer2);
-
-  const layers = [
+  const layers: layerSetup[] = [
     {
       name: 'layer1',
-      layer: layer1,
-      modeDraw: modeDraw1,
-      modeEdit: modeEdit1,
-      modeLoad: modeLoad1,
+      layerOptions: {
+        colorOpen: 'pink',
+        colorClosed: 'red',
+        colorBary: 'white',
+      },
       loadOptions: ['triangle', 'square', 'dolphin'],
     },
     {
       name: 'layer2',
-      layer: layer2,
-      modeDraw: modeDraw2,
-      modeEdit: modeEdit2,
-      modeLoad: modeLoad2,
+      layerOptions: {
+        colorOpen: 'aquamarine',
+        colorClosed: 'green',
+        colorBary: 'white',
+      },
       loadOptions: ['triangle', 'square', 'dolphin'],
     },
   ];
+
+  layers.forEach((d) => {
+    d.layer = new Layer(canvasStack, d.layerOptions);
+  });
 
   const layerOver = new Layer(canvasStack, {
     colorOpen: 'aquamarine',
@@ -81,6 +64,8 @@ function main() {
   });
 
   const globalBarycenter = (): Point => {
+    const layer1 = layers[0].layer as Layer;
+    const layer2 = layers[1].layer as Layer;
     const area1 = layer1.area;
     const area2 = layer2.area;
     const totalArea = area1 + area2;
@@ -95,6 +80,8 @@ function main() {
   };
 
   const drawGlobalBarycenter = () => {
+    const layer1 = layers[0].layer as Layer;
+    const layer2 = layers[1].layer as Layer;
     if (layer1.path.data.length > 1 && layer2.path.data.length > 1) {
       layerOver.clear();
       const C = globalBarycenter();
@@ -105,9 +92,11 @@ function main() {
 
   // window.GlBary = drawGlobalBarycenter;
 
-  modeDraw1.activate();
+  layers[0].layer?.modeDraw.activate();
 
-  let currentMode = modeDraw1 as Mode;
+  let currentMode = layers[0].layer?.modeDraw as Mode;
+
+  /* Create UI buttons */
 
   const layersUI = d3
     .select('#toolbar')
@@ -122,7 +111,7 @@ function main() {
     .html((d) => `Draw ${d.name}`)
     .on('click', (ev, d) => {
       currentMode.deactivate();
-      currentMode = d.modeDraw;
+      currentMode = d.layer?.modeDraw as Mode;
       currentMode.activate();
     });
 
@@ -131,7 +120,7 @@ function main() {
     .html((d) => `Edit ${d.name}`)
     .on('click', (ev, d) => {
       currentMode.deactivate();
-      currentMode = d.modeEdit;
+      currentMode = d.layer?.modeEdit as Mode;
       currentMode.activate();
     });
 
@@ -156,8 +145,9 @@ function main() {
       .classed('loadOptionsItem', true)
       .html((d) => d)
       .on('click', (ev, d) => {
+        const layer = layerStp.layer as Layer;
         console.log(d);
-        layerStp.modeLoad.loadShape(d);
+        layer.modeLoad.loadShape(d);
       });
 
     button.on('click', () => {
@@ -170,36 +160,6 @@ function main() {
 
   console.log(makeLoadOptions(layers[0]));
   layersUI.append((d) => makeLoadOptions(d));
-
-  // layersUI
-  //   .append('select')
-  //   .selectAll('option')
-  //   .data((d) => d.layer.parameters.loadOptions)
-  //   .enter()
-  //   .append('option')
-  //   .html((d) => `Load ${d}`)
-  //   .on('change', (ev, d, i, n) => {
-  //     const mode = console.log(d3.select(n[i].parentNode).datum().modeLoad);
-  //     console.log(mode);
-  //     currentMode.deactivate();
-  //     currentMode = mode;
-  //     currentMode.activate();
-  //     mode.loadShape(d);
-  //   });
-
-  // d3.select('#toolbar')
-  //   .append('button')
-  //   .html('Global Barycenter')
-  //   .on('click', drawGlobalBarycenter);
-
-  //   d3.select('#toolbar')
-  //     .append('button')
-  //     .html('Load')
-  //     .on('click', () => {
-  //       currentMode.deactivate();
-  //       currentMode = modeLoad1;
-  //       currentMode.activate();
-  //     });
 }
 
 ready(main);

@@ -7,14 +7,18 @@ import * as samples from './samples';
 // const actRadiusSq = 60 * 60; // activation radius squared
 // const nodeRadius = 5;
 
-class ModeLoad implements Mode {
+interface ModeLoad extends Mode {
+  loadShape(name: string): void;
+}
+
+class ModeLoad implements ModeLoad {
   layer: Layer;
 
   constructor(layer: Layer) {
     this.layer = layer;
   }
 
-  loadShape = (name: string): void => {
+  loadShape(name: string): void {
     const shape = samples[name as keyof typeof samples] as samples.Sample;
 
     const width = this.layer.cnv.width;
@@ -28,7 +32,7 @@ class ModeLoad implements Mode {
     this.layer.path.isClosed = true;
 
     this.layer.render();
-  };
+  }
 
   activate(): void {
     console.log('modeLoad activated');
