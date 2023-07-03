@@ -57,25 +57,29 @@ function barycenterBySurface(ctx: CanvasRenderingContext2D): {
 }
 
 const globalBarycenter = (layers: layerSetup[]): Point => {
-  const layer1 = layers[0].layer as Layer;
-  const layer2 = layers[1].layer as Layer;
-  const area1 = layer1.area;
-  const area2 = layer2.area;
-  const totalArea = area1 + area2;
+  const totalArea = layers
+    .map((d) => d.layer?.area as number)
+    .reduce((acc, curr) => acc + curr, 0);
 
   const X =
-    (layer1.barycenter.x * area1) / totalArea +
-    (layer2.barycenter.x * area2) / totalArea;
+    layers
+      .map((d) => (d.layer?.barycenter.x as number) * (d.layer?.area as number))
+      .reduce((acc, curr) => acc + curr, 0) / totalArea;
+
   const Y =
-    (layer1.barycenter.y * area1) / totalArea +
-    (layer2.barycenter.y * area2) / totalArea;
+    layers
+      .map((d) => (d.layer?.barycenter.y as number) * (d.layer?.area as number))
+      .reduce((acc, curr) => acc + curr, 0) / totalArea;
+
   return { x: X, y: Y };
 };
 
 const drawGlobalBarycenter = (layers: layerSetup[], targetLayer: Layer) => {
-  const layer1 = layers[0].layer as Layer;
-  const layer2 = layers[1].layer as Layer;
-  if (layer1.path.data.length > 1 && layer2.path.data.length > 1) {
+  if (
+    layers
+      .map((d) => (d.layer?.path.data.length as number) > 1)
+      .reduce((acc, curr) => acc && curr, true)
+  ) {
     targetLayer.clear();
     const C = globalBarycenter(layers);
     targetLayer.barycenter = C;
