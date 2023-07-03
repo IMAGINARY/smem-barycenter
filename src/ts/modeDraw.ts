@@ -19,7 +19,7 @@ class ModeDraw implements Mode {
     if (e.isPrimary) {
       const p = { x: e.offsetX, y: e.offsetY };
       this.layer.path.data.push(p);
-      console.log('pushed', p);
+      // console.log('pushed', p);
       this.layer.render();
     }
     this.isPressed = true;
@@ -90,7 +90,7 @@ class ModeDraw implements Mode {
 
   activate(): void {
     console.log('modeDraw activated');
-    console.log('lastpoint', this.lastPoint);
+    // console.log('lastpoint', this.lastPoint);
     this.layer.emptyData();
     this.layer.clear();
     this.layer.path.isClosed = false;

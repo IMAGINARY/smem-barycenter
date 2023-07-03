@@ -77,6 +77,16 @@ function main() {
     .append('img')
     .attr('src', new URL('../img/pencil-icon.jpeg', import.meta.url).href);
 
+  layersUI
+    .append('span')
+    .on('click', (ev, d) => {
+      d.layer?.emptyData();
+      d.layer?.clear();
+      d.layer?.computeBarycenter();
+      stack.currentMode.deactivate();
+    })
+    .append('img')
+    .attr('src', new URL('../img/trash-icon.jpeg', import.meta.url).href);
   // layersUI
   //   .append('button')
   //   .html((d) => `Edit ${d.name}`)

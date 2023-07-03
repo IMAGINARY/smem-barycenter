@@ -83,8 +83,9 @@ const drawGlobalBarycenter = (layers: layerSetup[], targetLayer: Layer) => {
     (d) => (d.layer?.path.data.length as number) > 1,
   ); // non-empty layers
 
+  targetLayer.clear();
+
   if (neLayers.length > 0) {
-    targetLayer.clear();
     const C = globalBarycenter(neLayers);
     targetLayer.barycenter = C;
     targetLayer.drawBarycenter();
