@@ -93,4 +93,9 @@ body {
   .layerButtons {
     display: flex;
     align-items: flex-start;
+    padding: 0.5em;
+  }
+  .layerButtons img {
+    width: 3em;
+    opacity: 80%;
   }

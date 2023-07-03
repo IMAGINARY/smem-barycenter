@@ -23,7 +23,7 @@ function main() {
         colorClosed: 'red',
         colorBary: 'white',
       },
-      loadOptions: ['triangle', 'square', 'dolphin'],
+      loadOptions: ['triangle', 'square', 'whale', 'emy', 'hedy'],
     },
     {
       name: 'layer2',
@@ -32,7 +32,7 @@ function main() {
         colorClosed: 'green',
         colorBary: 'white',
       },
-      loadOptions: ['triangle', 'square', 'dolphin'],
+      loadOptions: ['triangle', 'square', 'dolphin', 'gannet'],
     },
   ];
   const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
