@@ -57,17 +57,21 @@ function barycenterBySurface(ctx: CanvasRenderingContext2D): {
 }
 
 const globalBarycenter = (layers: layerSetup[]): Point => {
-  const totalArea = layers
+  const neLayers = layers.filter(
+    (d) => (d.layer?.path.data.length as number) > 1,
+  ); // non-empty layers
+
+  const totalArea = neLayers
     .map((d) => d.layer?.area as number)
     .reduce((acc, curr) => acc + curr, 0);
 
   const X =
-    layers
+    neLayers
       .map((d) => (d.layer?.barycenter.x as number) * (d.layer?.area as number))
       .reduce((acc, curr) => acc + curr, 0) / totalArea;
 
   const Y =
-    layers
+    neLayers
       .map((d) => (d.layer?.barycenter.y as number) * (d.layer?.area as number))
       .reduce((acc, curr) => acc + curr, 0) / totalArea;
 
@@ -75,13 +79,13 @@ const globalBarycenter = (layers: layerSetup[]): Point => {
 };
 
 const drawGlobalBarycenter = (layers: layerSetup[], targetLayer: Layer) => {
-  if (
-    layers
-      .map((d) => (d.layer?.path.data.length as number) > 1)
-      .reduce((acc, curr) => acc && curr, true)
-  ) {
+  const neLayers = layers.filter(
+    (d) => (d.layer?.path.data.length as number) > 1,
+  ); // non-empty layers
+
+  if (neLayers.length > 0) {
     targetLayer.clear();
-    const C = globalBarycenter(layers);
+    const C = globalBarycenter(neLayers);
     targetLayer.barycenter = C;
     targetLayer.drawBarycenter();
   }

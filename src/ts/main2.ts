@@ -34,6 +34,15 @@ function main() {
       },
       loadOptions: ['triangle', 'square', 'dolphin', 'gannet'],
     },
+    {
+      name: 'layer3',
+      layerOptions: {
+        colorOpen: 'turquoise',
+        colorClosed: 'blue',
+        colorBary: 'white',
+      },
+      loadOptions: ['triangle', 'square', 'dolphin', 'gannet'],
+    },
   ];
   const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
 
