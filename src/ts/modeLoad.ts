@@ -32,6 +32,9 @@ class ModeLoad implements ModeLoad {
     this.layer.path.isClosed = true;
 
     this.layer.render();
+    this.layer.deactivate();
+    this.layer.parentStack.currentMode.deactivate();
+    this.layer.parentStack.modeStandby.activate();
   }
 
   activate(): void {

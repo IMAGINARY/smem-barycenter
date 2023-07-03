@@ -4,7 +4,8 @@ import { Point } from './barycenter';
 // import { Point, barycenterBySurface } from './barycenter';
 // import { ModeConfig } from './uiFunctions';
 // import ModeDraw from './modeDraw';
-import { Mode, Layer, layerOptions } from './layer';
+import { Mode, Layer, layerSetup } from './layer';
+import { Stack } from './stack';
 
 declare global {
   interface Window {
@@ -12,22 +13,8 @@ declare global {
     barySur: (ctx: CanvasRenderingContext2D) => Point;
   }
 }
-// window.d3 = d3;
-
-// class layerSetup {
-
-// }
-
-interface layerSetup {
-  name: string;
-  layer?: Layer;
-  layerOptions: layerOptions;
-  loadOptions: string[];
-}
 
 function main() {
-  const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
-
   const layers: layerSetup[] = [
     {
       name: 'layer1',
@@ -48,53 +35,16 @@ function main() {
       loadOptions: ['triangle', 'square', 'dolphin'],
     },
   ];
+  const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
 
-  layers.forEach((d) => {
-    d.layer = new Layer(canvasStack, d.layerOptions);
-  });
+  const stack = new Stack(canvasStack, layers);
 
-  const layerOver = new Layer(canvasStack, {
-    colorOpen: 'aquamarine',
-    colorClosed: 'green',
-    colorBary: 'yellow',
-  });
+  // standbyActivate();
 
-  canvasStack.addEventListener('triggerBarycenter', () => {
-    drawGlobalBarycenter();
-  });
-
-  const globalBarycenter = (): Point => {
-    const layer1 = layers[0].layer as Layer;
-    const layer2 = layers[1].layer as Layer;
-    const area1 = layer1.area;
-    const area2 = layer2.area;
-    const totalArea = area1 + area2;
-
-    const X =
-      (layer1.barycenter.x * area1) / totalArea +
-      (layer2.barycenter.x * area2) / totalArea;
-    const Y =
-      (layer1.barycenter.y * area1) / totalArea +
-      (layer2.barycenter.y * area2) / totalArea;
-    return { x: X, y: Y };
-  };
-
-  const drawGlobalBarycenter = () => {
-    const layer1 = layers[0].layer as Layer;
-    const layer2 = layers[1].layer as Layer;
-    if (layer1.path.data.length > 1 && layer2.path.data.length > 1) {
-      layerOver.clear();
-      const C = globalBarycenter();
-      layerOver.barycenter = C;
-      layerOver.drawBarycenter();
-    }
-  };
-
-  // window.GlBary = drawGlobalBarycenter;
-
-  layers[0].layer?.modeDraw.activate();
-
-  let currentMode = layers[0].layer?.modeDraw as Mode;
+  // window.standby = standbyActivate;
+  // const standbyDeactivate = () => {
+  //   console.log('standby deactivated');
+  // };
 
   /* Create UI buttons */
 
@@ -104,25 +54,28 @@ function main() {
     .data(layers)
     .enter()
     .append('div')
-    .classed('layerButtons', true);
+    .classed('layerButtons', true)
+    .style('background-color', (d) => `${d.layerOptions.colorOpen}`);
 
   layersUI
-    .append('button')
-    .html((d) => `Draw ${d.name}`)
+    .append('span')
+    // .html((d) => `Draw ${d.name}`)
     .on('click', (ev, d) => {
-      currentMode.deactivate();
-      currentMode = d.layer?.modeDraw as Mode;
-      currentMode.activate();
-    });
+      stack.currentMode.deactivate();
+      stack.currentMode = d.layer?.modeDraw as Mode;
+      stack.currentMode.activate();
+    })
+    .append('img')
+    .attr('src', new URL('../img/pencil-icon.jpeg', import.meta.url).href);
 
-  layersUI
-    .append('button')
-    .html((d) => `Edit ${d.name}`)
-    .on('click', (ev, d) => {
-      currentMode.deactivate();
-      currentMode = d.layer?.modeEdit as Mode;
-      currentMode.activate();
-    });
+  // layersUI
+  //   .append('button')
+  //   .html((d) => `Edit ${d.name}`)
+  //   .on('click', (ev, d) => {
+  //     currentMode.deactivate();
+  //     currentMode = d.layer?.modeEdit as Mode;
+  //     currentMode.activate();
+  //   });
 
   const makeLoadOptions = (layerStp: layerSetup) => {
     const container = document.createElement('span');
@@ -153,12 +106,10 @@ function main() {
     button.on('click', () => {
       options.classed('hidden', !options.classed('hidden'));
     });
-    console.log(d3.select(container));
 
     return container;
   };
 
-  console.log(makeLoadOptions(layers[0]));
   layersUI.append((d) => makeLoadOptions(d));
 }
 

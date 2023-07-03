@@ -3,6 +3,7 @@ import { barycenterBySurface } from './barycenter';
 import { ModeDraw } from './modeDraw';
 import { ModeEdit } from './modeEdit';
 import { ModeLoad } from './modeLoad';
+import { Stack } from './stack';
 
 interface Point {
   x: number;
@@ -20,8 +21,16 @@ interface layerOptions {
   colorBary: string;
 }
 
+interface layerSetup {
+  name: string;
+  layer?: Layer;
+  layerOptions: layerOptions;
+  loadOptions: string[];
+}
+
 // A "Layer" is a canvas element that contains data (path, barycenter, parameters)...
 interface Layer {
+  parentStack: Stack;
   cnv: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   path: Path;
@@ -47,13 +56,18 @@ interface Mode {
 const triggerBarycenter = new Event('triggerBarycenter', { bubbles: true });
 
 class Layer implements Layer {
-  constructor(parent: HTMLDivElement, parameters: layerOptions) {
+  constructor(
+    parentStack: Stack,
+    parentElement: HTMLDivElement,
+    parameters: layerOptions,
+  ) {
+    this.parentStack = parentStack;
     this.cnv = document.createElement('canvas');
-    this.cnv.width = parent.clientWidth;
-    this.cnv.height = parent.clientHeight;
-    const numLayer = parent.childElementCount;
+    this.cnv.width = parentElement.clientWidth;
+    this.cnv.height = parentElement.clientHeight;
+    const numLayer = parentElement.childElementCount;
 
-    parent.appendChild(this.cnv);
+    parentElement.appendChild(this.cnv);
     this.cnv.classList.add('layer');
     this.cnv.style.zIndex = numLayer.toString();
 
@@ -139,4 +153,4 @@ class Layer implements Layer {
   }
 }
 
-export { Point, Path, layerOptions, Layer, Mode };
+export { Point, Path, layerOptions, Layer, Mode, layerSetup };

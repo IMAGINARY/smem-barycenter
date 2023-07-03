@@ -94,6 +94,8 @@ class ModeDraw implements Mode {
     this.layer.emptyData();
     this.layer.clear();
     this.layer.path.isClosed = false;
+
+    this.layer.parentStack.modeStandby.deactivate();
     this.layer.activate();
     this.layer.cnv.addEventListener('pointermove', this.dragged);
     this.layer.cnv.addEventListener('pointerdown', this.pointedDown);
@@ -109,6 +111,7 @@ class ModeDraw implements Mode {
     this.layer.cnv.removeEventListener('pointerdown', this.pointedDown);
     this.layer.cnv.removeEventListener('pointerup', this.pointedUp);
     this.layer.cnv.removeEventListener('pointerout', this.pointedUp);
+    this.layer.parentStack.modeStandby.activate();
   }
 }
 

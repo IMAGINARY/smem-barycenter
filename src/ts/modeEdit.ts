@@ -25,8 +25,10 @@ class ModeEdit implements Mode {
     this.layer.path.data.forEach((p) => {
       const ctx = this.layer.ctx;
       ctx.beginPath();
+      ctx.fillStyle = '#ffffff11';
       ctx.arc(p.x, p.y, nodeRadius, 0, 2 * Math.PI);
       ctx.stroke();
+      ctx.fill();
     });
   };
 
