@@ -23,7 +23,7 @@ class ModeLoad implements ModeLoad {
 
     const width = this.layer.cnv.width;
     const height = this.layer.cnv.height;
-    const scale = width / shape.size / 2;
+    const scale = (width / shape.size) * 0.25;
 
     this.layer.path.data = shape.data.map((d) => ({
       x: d.x * scale + width / 2,

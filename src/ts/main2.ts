@@ -100,8 +100,14 @@ function main() {
     const container = document.createElement('span');
     const button = d3
       .select(container)
-      .append('button')
-      .html(`Load ${layerStp.name}`);
+      .classed('loadOptionsContainer', true)
+      .append('span')
+      // .html(`Load ${layerStp.name}`);
+      .append('img')
+      .attr(
+        'src',
+        new URL('../img/arrow-right-icon2.png', import.meta.url).href,
+      );
 
     const options = d3
       .select(container)
