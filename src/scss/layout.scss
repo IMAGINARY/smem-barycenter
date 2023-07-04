@@ -92,13 +92,18 @@ body {
     // flex-direction: row;
     margin: 0;
     padding: 0;
+    gap: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
   }
+
   .loadOptionsItem {
     background-color: lightgrey;
-    border: 1px solid black;
-    border-radius: 2px;
-    margin: 1px;
-    padding:0.2em;
+    // border: 1px solid black;
+    border-radius: 10px;
+    // margin: 1px;
+    // padding:0.2em;
+    opacity: 0.9;
   }
 
   .layerButtons {

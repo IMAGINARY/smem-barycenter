@@ -6,6 +6,7 @@ import { Point } from './barycenter';
 // import ModeDraw from './modeDraw';
 import { Mode, Layer, layerSetup } from './layer';
 import { Stack } from './stack';
+import * as shp from '../img/shp-assets';
 
 declare global {
   interface Window {
@@ -121,12 +122,14 @@ function main() {
       .enter()
       .append('li')
       .classed('loadOptionsItem', true)
-      .html((d) => d)
+      // .html((d) => d)
       .on('click', (ev, d) => {
         const layer = layerStp.layer as Layer;
         console.log(d);
         layer.modeLoad.loadShape(d);
-      });
+      })
+      .append('img')
+      .attr('src', (d) => shp[`shp_${d}` as keyof typeof shp]);
 
     button.on('click', () => {
       options.classed('hidden', !options.classed('hidden'));
