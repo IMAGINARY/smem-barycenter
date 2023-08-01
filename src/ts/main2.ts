@@ -1,12 +1,10 @@
 import ready from 'document-ready';
 import * as d3 from 'd3-selection';
 import { Point } from './barycenter';
-// import { Point, barycenterBySurface } from './barycenter';
-// import { ModeConfig } from './uiFunctions';
-// import ModeDraw from './modeDraw';
 import { Mode, Layer, layerSetup } from './layer';
 import { Stack } from './stack';
 import * as shp from '../img/shp-assets';
+import { printCanvases } from './export';
 
 declare global {
   interface Window {
@@ -60,6 +58,8 @@ function main() {
 
   const layersUI = d3
     .select('#toolbar')
+    .append('div')
+    .attr('id', 'layersToolbar')
     .selectAll('div')
     .data(layers)
     .enter()
@@ -139,6 +139,16 @@ function main() {
   };
 
   layersUI.append((d) => makeLoadOptions(d));
+
+  // Print button
+  d3.select('#toolbar')
+    .append('div')
+    .classed('layerButtons', true)
+    .classed('printerButton', true)
+    .append('span')
+    .append('img')
+    .attr('src', new URL('../img/printer-icon.jpeg', import.meta.url).href)
+    .on('click', () => printCanvases(stack));
 }
 
 ready(main);
