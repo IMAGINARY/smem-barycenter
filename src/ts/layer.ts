@@ -16,13 +16,14 @@ interface Path {
 }
 
 interface layerOptions {
+  name: string;
   colorClosed: string;
   colorOpen: string;
   colorBary: string;
 }
 
 interface layerSetup {
-  name: string;
+  // name: string;
   layer?: Layer;
   layerOptions: layerOptions;
   loadOptions: string[];
@@ -30,6 +31,7 @@ interface layerSetup {
 
 // A "Layer" is a canvas element that contains data (path, barycenter, parameters)...
 interface Layer {
+  name: string;
   parentStack: Stack;
   cnv: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -41,6 +43,7 @@ interface Layer {
   render(): void; // Updates the image, can be called without previous activate().
   clear(): void;
   deactivate(): void; // Cleans all the user interaction.
+  active: boolean;
   modeDraw: Mode;
   modeEdit: Mode;
   modeLoad: ModeLoad;
@@ -61,6 +64,7 @@ class Layer implements Layer {
     parentElement: HTMLDivElement,
     parameters: layerOptions,
   ) {
+    this.name = parameters.name;
     this.parentStack = parentStack;
     this.cnv = document.createElement('canvas');
     this.cnv.width = parentElement.clientWidth;
@@ -87,6 +91,8 @@ class Layer implements Layer {
     this.modeDraw = new ModeDraw(this);
     this.modeEdit = new ModeEdit(this);
     this.modeLoad = new ModeLoad(this);
+
+    this.active = false;
   }
 
   drawPath(): void {
@@ -146,10 +152,13 @@ class Layer implements Layer {
 
   activate(): void {
     this.cnv.style.pointerEvents = 'auto';
-    console.log('layer activated');
+    console.log(`Layer "${this.name}" activated`);
+    this.active = true;
   }
   deactivate(): void {
     this.cnv.style.pointerEvents = 'none';
+    console.log(`Layer "${this.name}" deactivated`);
+    this.active = false;
   }
 }
 

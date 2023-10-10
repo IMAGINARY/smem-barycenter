@@ -1,7 +1,7 @@
 import ready from 'document-ready';
 import * as d3 from 'd3-selection';
 import { Point } from './barycenter';
-import { Mode, Layer, layerSetup } from './layer';
+import { Layer, layerSetup } from './layer';
 import { Stack } from './stack';
 import * as shp from '../img/shp-assets';
 import { printCanvases } from './export';
@@ -16,8 +16,8 @@ declare global {
 function main() {
   const layers: layerSetup[] = [
     {
-      name: 'layer1',
       layerOptions: {
+        name: 'layer1',
         colorOpen: 'pink',
         colorClosed: 'red',
         colorBary: 'white',
@@ -25,8 +25,8 @@ function main() {
       loadOptions: ['triangle', 'square', 'whale', 'emy', 'hedy'],
     },
     {
-      name: 'layer2',
       layerOptions: {
+        name: 'layer2',
         colorOpen: 'aquamarine',
         colorClosed: 'green',
         colorBary: 'white',
@@ -34,8 +34,8 @@ function main() {
       loadOptions: ['triangle', 'square', 'dolphin', 'gannet'],
     },
     {
-      name: 'layer3',
       layerOptions: {
+        name: 'layer3',
         colorOpen: 'turquoise',
         colorClosed: 'blue',
         colorBary: 'white',
@@ -43,6 +43,17 @@ function main() {
       loadOptions: ['triangle', 'square', 'dolphin', 'gannet'],
     },
   ];
+
+  const loadOptions = [
+    'triangle',
+    'square',
+    'whale',
+    'emy',
+    'hedy',
+    'dolphin',
+    'gannet',
+  ];
+
   const canvasStack = document.getElementById('canvasStack') as HTMLDivElement;
 
   const stack = new Stack(canvasStack, layers);
@@ -56,101 +67,84 @@ function main() {
 
   /* Create UI buttons */
 
-  const layersUI = d3
-    .select('#toolbar')
-    .append('div')
-    .attr('id', 'layersToolbar')
-    .selectAll('div')
+  // const layersUI = d3
+  //   .select('#toolbar')
+  //   .append('div')
+  //   .attr('id', 'layersToolbar')
+  //   .selectAll('div')
+  //   .enter()
+  //   .append('div');
+
+  d3.select('#toolbar')
+    .selectAll('span.layerButtons')
     .data(layers)
     .enter()
-    .append('div')
+    .append('span')
     .classed('layerButtons', true)
-    .style('background-color', (d) => `${d.layerOptions.colorOpen}`);
+    .style('background-color', (d) => `${d.layerOptions.colorClosed}`)
+    .classed('button', true)
+    .attr('id', (d) => `button-${d.layerOptions.name}`)
+    .on('click', (ev, d) => {
+      stack.switchLayer(d.layer as Layer);
+    });
+  // .append('img')
+  // .attr('src', new URL('../img/pencil-icon.jpeg', import.meta.url).href);
 
-  layersUI
+  stack.switchLayer(stack.currentLayer);
+
+  d3.select('#toolbar2')
     .append('span')
     .classed('button', true)
     // .html((d) => `Draw ${d.name}`)
-    .on('click', (ev, d) => {
-      stack.currentMode.deactivate();
-      stack.currentMode = d.layer?.modeDraw as Mode;
-      stack.currentMode.activate();
+    .on('click', () => {
+      stack.switchMode(stack.currentLayer.modeDraw);
     })
     .append('img')
     .attr('src', new URL('../img/pencil-icon.jpeg', import.meta.url).href);
 
-  layersUI
+  d3.select('#toolbar2')
+    .selectAll('span.loadOptionsItem')
+    .data(loadOptions)
+    .enter()
     .append('span')
+    .classed('loadOptionsItem', true)
     .classed('button', true)
+    // .html((d) => d)
     .on('click', (ev, d) => {
-      d.layer?.emptyData();
-      d.layer?.clear();
-      d.layer?.computeBarycenter();
+      const layer = stack.currentLayer;
+      console.log(d);
+      layer.modeLoad.loadShape(d);
+    })
+    .append('img')
+    .attr('src', (d) => shp[`shp_${d}` as keyof typeof shp]);
+
+  d3.select('#toolbar2')
+    .append('span')
+    .classed('trashButton', true)
+    .classed('button', true)
+    .on('click', () => {
+      stack.currentLayer.emptyData();
+      stack.currentLayer.clear();
+      stack.currentLayer.computeBarycenter();
+      stack.currentMode.deactivate();
+    })
+    .on('dblclick', () => {
+      stack.layers.forEach((layer) => {
+        layer.emptyData();
+        layer.clear();
+        layer.computeBarycenter();
+      });
       stack.currentMode.deactivate();
     })
     .append('img')
     .attr('src', new URL('../img/trash-icon.jpeg', import.meta.url).href);
-  // layersUI
-  //   .append('button')
-  //   .html((d) => `Edit ${d.name}`)
-  //   .on('click', (ev, d) => {
-  //     currentMode.deactivate();
-  //     currentMode = d.layer?.modeEdit as Mode;
-  //     currentMode.activate();
-  //   });
-
-  const makeLoadOptions = (layerStp: layerSetup) => {
-    const container = document.createElement('span');
-    const button = d3
-      .select(container)
-      .classed('loadOptionsContainer', true)
-      .append('span')
-      .classed('button', true)
-      // .html(`Load ${layerStp.name}`);
-      .append('img')
-      .attr(
-        'src',
-        new URL('../img/arrow-right-icon2.png', import.meta.url).href,
-      );
-
-    const options = d3
-      .select(container)
-      .append('ul')
-      .classed('hidden', true)
-      .classed('loadOptionsList', true);
-
-    options
-      .selectAll('li')
-      .data(layerStp.loadOptions)
-      .enter()
-      .append('li')
-      .classed('loadOptionsItem', true)
-      .classed('button', true)
-      // .html((d) => d)
-      .on('click', (ev, d) => {
-        const layer = layerStp.layer as Layer;
-        console.log(d);
-        layer.modeLoad.loadShape(d);
-      })
-      .append('img')
-      .attr('src', (d) => shp[`shp_${d}` as keyof typeof shp]);
-
-    button.on('click', () => {
-      options.classed('hidden', !options.classed('hidden'));
-    });
-
-    return container;
-  };
-
-  layersUI.append((d) => makeLoadOptions(d));
 
   // Print button
   d3.select('#toolbar')
-    .append('div')
-    .classed('layerButtons', true)
+    .append('span')
+    // .classed('layerButtons', true)
     .classed('printerButton', true)
     .classed('button', true)
-    .append('span')
     .append('img')
     .attr('src', new URL('../img/printer-icon.jpeg', import.meta.url).href)
     .on('click', () => printCanvases(stack));

@@ -33,10 +33,9 @@ class Stack implements Stack {
 
     this.currentLayer = layers[0].layer as Layer;
     this.currentMode = layers[0].layer?.modeDraw as Mode;
-    // this.currentLayer.activate();
-    // this.currentMode.activate();
 
     this.layerOver = new Layer(this, parent, {
+      name: 'layerOver',
       colorOpen: 'aquamarine',
       colorClosed: 'green',
       colorBary: 'yellow',
@@ -51,9 +50,19 @@ class Stack implements Stack {
   }
 
   switchLayer(layer: Layer) {
+    document
+      .getElementById(`button-${this.currentLayer.name}`)
+      ?.classList.remove('layerButtonActive');
+
     this.currentLayer.deactivate();
     this.currentLayer = layer;
     this.currentLayer.activate();
+
+    document
+      .getElementById(`button-${this.currentLayer.name}`)
+      ?.classList.add('layerButtonActive');
+
+    console.log(`Current layer: ${layer.name}`);
   }
 
   switchMode(mode: Mode) {

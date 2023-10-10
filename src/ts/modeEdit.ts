@@ -37,11 +37,12 @@ class ModeEdit implements Mode {
     this.selectedPoints = this.layer.path.data.filter(
       (x) => dist(p, x) < nodeRadius,
     );
-    if (this.selectedPoints.length === 0) {
-      this.selectedPoints = this.layer.path.data.filter(
-        (x) => dist(p, x) < 5 * nodeRadius,
-      );
-    }
+    // // Uncomment to select close nodes
+    // if (this.selectedPoints.length === 0) {
+    //   this.selectedPoints = this.layer.path.data.filter(
+    //     (x) => dist(p, x) < 3 * nodeRadius,
+    //   );
+    // }
     if (this.selectedPoints.length === 0) {
       const color = this.layer.ctx.getImageData(p.x, p.y, 1, 1).data;
       if (color[3] !== 0) {
