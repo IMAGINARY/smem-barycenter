@@ -122,6 +122,9 @@ body {
     margin: 0.1em;
   }
 
+  .button:active{
+    filter: brightness(70%);
+  }
   .printerButton {
     background-color:hsl(0, 80%, 69%);
   }

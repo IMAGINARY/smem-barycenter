@@ -69,6 +69,7 @@ function main() {
 
   layersUI
     .append('span')
+    .classed('button', true)
     // .html((d) => `Draw ${d.name}`)
     .on('click', (ev, d) => {
       stack.currentMode.deactivate();
@@ -80,6 +81,7 @@ function main() {
 
   layersUI
     .append('span')
+    .classed('button', true)
     .on('click', (ev, d) => {
       d.layer?.emptyData();
       d.layer?.clear();
@@ -103,6 +105,7 @@ function main() {
       .select(container)
       .classed('loadOptionsContainer', true)
       .append('span')
+      .classed('button', true)
       // .html(`Load ${layerStp.name}`);
       .append('img')
       .attr(
@@ -122,6 +125,7 @@ function main() {
       .enter()
       .append('li')
       .classed('loadOptionsItem', true)
+      .classed('button', true)
       // .html((d) => d)
       .on('click', (ev, d) => {
         const layer = layerStp.layer as Layer;
@@ -145,6 +149,7 @@ function main() {
     .append('div')
     .classed('layerButtons', true)
     .classed('printerButton', true)
+    .classed('button', true)
     .append('span')
     .append('img')
     .attr('src', new URL('../img/printer-icon.jpeg', import.meta.url).href)
